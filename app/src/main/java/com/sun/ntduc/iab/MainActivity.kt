@@ -1,9 +1,12 @@
 package com.sun.ntduc.iab
 
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.RecyclerView
 import android.util.Log
+import android.widget.Button
+import android.widget.TextView
 import com.android.billingclient.api.*
 import com.android.billingclient.api.AcknowledgePurchaseParams
 import com.android.billingclient.api.BillingClient
@@ -52,6 +55,10 @@ class MainActivity : AppCompatActivity(),PurchasesUpdatedListener, BillingClient
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         instantiateAndConnectToPlayBillingService()
+        findViewById<Button>(R.id.btn).setOnClickListener {
+            val intent = Intent(this, EmptyActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     private fun instantiateAndConnectToPlayBillingService() {
@@ -72,9 +79,9 @@ class MainActivity : AppCompatActivity(),PurchasesUpdatedListener, BillingClient
     override fun onBillingSetupFinished(billingResult: BillingResult) {
         when (billingResult.responseCode) {
             BillingClient.BillingResponseCode.OK -> {
-                Log.d(TAG, "onBillingSetupFinished successfully")
-//                querySkuDetailsAsync(BillingClient.SkuType.INAPP, GameSku.INAPP_SKUS)
-//                querySkuDetailsAsync(BillingClient.SkuType.SUBS, GameSku.SUBS_SKUS)
+                Log.d(TAG, "onBillingSetupFinished successfully" + billingResult.debugMessage)
+                querySkuDetailsAsync(BillingClient.SkuType.INAPP, SkuConstaint.INAPP_SKUS)
+                querySkuDetailsAsync(BillingClient.SkuType.SUBS, SkuConstaint.SUBS_SKUS)
                 queryPurchasesAsync()
             }
             BillingClient.BillingResponseCode.BILLING_UNAVAILABLE -> {
@@ -185,6 +192,37 @@ class MainActivity : AppCompatActivity(),PurchasesUpdatedListener, BillingClient
                 "isSubscriptionSupported() error: ${billingResult.debugMessage}")
         }
         return succeeded
+    }
+
+    private fun querySkuDetailsAsync(
+        @BillingClient.SkuType skuType: String,
+        skuList: List<String>) {
+        val params = SkuDetailsParams.newBuilder().setSkusList(skuList).setType(skuType).build()
+        Log.d(TAG, "querySkuDetailsAsync for $skuType")
+        playStoreBillingClient.querySkuDetailsAsync(params) { billingResult, skuDetailsList ->
+            when (billingResult.responseCode) {
+                BillingClient.BillingResponseCode.OK -> {
+                    findViewById<TextView>(R.id.tv1).text = skuDetailsList.toString()
+                    Log.d(TAG,"skulist" +  skuDetailsList.toString())
+
+                }
+                else -> {
+                    Log.e(TAG, billingResult.debugMessage)
+                }
+            }
+        }
+    }
+
+    private object SkuConstaint {
+        val FOOD = "food"
+        val DRINK = "drink"
+        val MONTHLY = "monthly"
+        val YEARLY = "yearly"
+
+        val INAPP_SKUS = listOf(FOOD, DRINK)
+        val SUBS_SKUS = listOf(MONTHLY, YEARLY)
+        val CONSUMABLE_SKUS = listOf(FOOD)
+        val GOLD_STATUS_SKUS = SUBS_SKUS // coincidence that there only gold_status is a sub
     }
 
 }
