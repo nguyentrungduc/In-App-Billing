@@ -232,8 +232,13 @@ Kiểm tra tính năng cụ thể đăng ký
         
 - Để access vào developer payload -> getDeveloperPayload()
 
+* Verify purchase
+-Bằng cách triển khai logic xác minh mua hàng trên server backend, bạn có thể bảo vệ ứng dụng của mình khỏi những kẻ tấn công cố gắng thiết kế ngược tệp APK của bạn và vô hiệu hóa logic xác minh của nó. Để xác minh chi tiết mua hàng trên server tao làm như sau : 
+- Sau khi lấy token từ app -> sử dụng subscription và purchaer của Google Play Developer API to -> lấy puchare detail
+- Server trả lại thông tin xác thực cho người dùng 
 ### Keep purchases up-to-date
 - Có thể mất theo dõi những lần mua hàng mà người dùng đã thực hiện. Dưới đây là hai tình huống trong đó ứng dụng của bạn có thể mất dấu vết mua hàng và việc truy vấn mua hàng là quan trọng. 
+2. Server xác minh đó là id đơn hàng duy nhất 
 ### Loi 
 1.Một người dùng mua một one-time product
 
