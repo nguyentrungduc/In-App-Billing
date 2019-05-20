@@ -201,4 +201,14 @@ Kiểm tra tính năng cụ thể đăng ký
              }
         }
 
+### Keep purchases up-to-date
+- Có thể mất theo dõi những lần mua hàng mà người dùng đã thực hiện. Dưới đây là hai tình huống trong đó ứng dụng của bạn có thể mất dấu vết mua hàng và việc truy vấn mua hàng là quan trọng. 
+### TH1
+1.Một người dùng mua một sản phẩm một lần, chẳng hạn như thêm gas cho trò chơi lái xe. 
+2.Ứng dụng sẽ gửi mã thông báo mua hàng đến máy chủ phụ trợ an toàn để xác minh. 
+3.Máy chủ tạm thời ngừng hoạt động. 
+4.Ứng dụng nhận ra rằng máy chủ bị hỏng và Thông báo cho người dùng rằng có vấn đề với việc mua hàng. 
+5.Ứng dụng Android thử gửi lại mã thông báo mua hàng đến máy chủ phụ trợ an toàn và hoàn tất giao dịch mua ngay khi máy chủ được khôi phục. 
+6. Ứng dụng sẽ  releases
+
 
