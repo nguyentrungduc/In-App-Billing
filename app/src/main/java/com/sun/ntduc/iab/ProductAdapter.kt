@@ -9,23 +9,45 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.android.billingclient.api.SkuDetails
 
-class ProductAdapter(
-    private val list: List<SkuDetails>,
-    private val onProductClicked: (SkuDetails) -> Unit
-) : RecyclerView.Adapter<ProductAdapter.ViewHolder>() {
+class ProductAdapter(val listener: OnClickItemListener) :
+    ListAdapter<SkuDetails, ProductAdapter.ViewHolder>(SkuDiffCallback()) {
 
-    override fun getItemCount(): Int = list.size
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductAdapter.ViewHolder {
-        val textView = LayoutInflater.from(parent.context).inflate(R.layout.item_product, parent, false) as TextView
-        val viewHolder = ViewHolder(textView)
-        textView.setOnClickListener { onProductClicked(list[viewHolder.adapterPosition]) }
-        return viewHolder
+    interface OnClickItemListener {
+        fun onClickItem(item: SkuDetails)
     }
+
+    override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
+        val inflater = LayoutInflater.from(viewGroup.context)
+        return ViewHolder(inflater.inflate(R.layout.item_product, viewGroup, false))
+    }
+
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.textView.text = list[position].title
+        holder.bind(getItem(position), listener)
+
     }
 
-    class ViewHolder(val textView: TextView) : RecyclerView.ViewHolder(textView)
+    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+        fun bind(sku: SkuDetails, listener: OnClickItemListener) {
+            val tv = itemView.findViewById<TextView>(R.id.tv_sku)
+            tv.text = sku.toString()
+            tv.setOnClickListener {
+                listener.onClickItem(sku)
+            }
+
+        }
+    }
+
+    class SkuDiffCallback : DiffUtil.ItemCallback<SkuDetails>() {
+        override fun areItemsTheSame(oldItem: SkuDetails, newItem: SkuDetails): Boolean {
+            return oldItem == newItem
+        }
+
+        override fun areContentsTheSame(oldItem: SkuDetails, newItem: SkuDetails): Boolean {
+            return oldItem == newItem
+        }
+    }
+
+
 }
