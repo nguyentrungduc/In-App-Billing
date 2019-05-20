@@ -203,12 +203,48 @@ Kiểm tra tính năng cụ thể đăng ký
 
 ### Keep purchases up-to-date
 - Có thể mất theo dõi những lần mua hàng mà người dùng đã thực hiện. Dưới đây là hai tình huống trong đó ứng dụng của bạn có thể mất dấu vết mua hàng và việc truy vấn mua hàng là quan trọng. 
-### TH1
-1.Một người dùng mua một sản phẩm một lần, chẳng hạn như thêm gas cho trò chơi lái xe. 
-2.Ứng dụng sẽ gửi mã thông báo mua hàng đến máy chủ phụ trợ an toàn để xác minh. 
-3.Máy chủ tạm thời ngừng hoạt động. 
-4.Ứng dụng nhận ra rằng máy chủ bị hỏng và Thông báo cho người dùng rằng có vấn đề với việc mua hàng. 
+### Loi 
+1.Một người dùng mua một one-time product
+
+2.Ứng dụng sẽ gửi mã thông báo mua hàng server backend an toàn để xác minh. 
+
+3.Server thời ngừng hoạt động. 
+
+4.Ứng dụng nhận ra rằng máy chủ bị hỏng và Thông báo cho người dùng rằng có vấn đề với việc mua hàng.
+
 5.Ứng dụng Android thử gửi lại mã thông báo mua hàng đến máy chủ phụ trợ an toàn và hoàn tất giao dịch mua ngay khi máy chủ được khôi phục. 
 6. Ứng dụng sẽ  releases
 
+### Th2 (Trên nhiều thiết bị)
+1.Một người dùng mua 1 subcription
+
+2.Ứng dụng sẽ gửi mã thông báo mua hàng đến máy chủ phụ trợ an toàn để xác minh.
+
+3.Máy chủ xác minh mã thông báo mua hàng.
+
+4.Ứng dụng phát hành nội dung.
+
+5.Người dùng chuyển sang máy tính bảng Android để sử dụng đăng ký.
+
+6.Ứng dụng trên các truy vấn thiết bị mới cho danh sách mua hàng được cập nhật.
+
+7.Ứng dụng nhận ra đăng ký và cấp quyền truy cập vào máy tính bảng.
+
+-> Sử lí như nào?
+
+### Get purchase from cache
+- Truy vấn các giao dịch mà ng dùng thực hiện -> queryPurchase()
+
+                        val purchasesResult: PurchasesResult =
+                        billingClient.queryPurchases(SkuType.INAPP)
+
+- Nó sẽ trả về tất cả các đơn hàng đã mua của account -> List Purchase object
+
+-Để lấy lại danh sách, hãy gọi getPurchaseList () trên PurchasingResult. Sau đó, bạn có thể gọi nhiều phương thức khác nhau trên đối tượng Mua hàng để xem thông tin liên quan về mặt hàng, chẳng hạn như trạng thái hoặc thời gian mua hàng của nó. Để xem các loại thông tin chi tiết sản phẩm có sẵn, hãy xem danh sách các phương thức trong Purchase class
+
+- Ta có thể dùng queryPurchases() ở 2 nơi 
+
+-  queryPurchase() mỗi khi ứng dụng của bạn khởi chạy để bạn có thể khôi phục mọi giao dịch mua mà người dùng đã thực hiện kể từ khi ứng dụng dừng lần cuối. 
+
+- queryPurchase() trong phương thức onResume(), bởi vì người dùng có thể mua hàng khi ứng dụng của bạn ở chế độ nền (ví dụ: đổi mã khuyến mãi trong ứng dụng Google Play Store).
 
