@@ -1,228 +1,111 @@
 package com.sun.ntduc.iab
 
 import android.content.Intent
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.support.v7.widget.RecyclerView
-import android.util.Log
-import android.widget.Button
-import android.widget.TextView
+import android.support.v7.app.AppCompatActivity
+import android.view.View
 import com.android.billingclient.api.*
-import com.android.billingclient.api.AcknowledgePurchaseParams
-import com.android.billingclient.api.BillingClient
-import com.android.billingclient.api.BillingClientStateListener
-import com.android.billingclient.api.BillingResult
-import com.android.billingclient.api.Purchase
-import com.android.billingclient.api.PurchasesUpdatedListener
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity(),PurchasesUpdatedListener, BillingClientStateListener  {
+class MainActivity : AppCompatActivity(), PurchasesUpdatedListener {
 
-    private lateinit var playStoreBillingClient: BillingClient
-
-    override fun onPurchasesUpdated(billingResult: BillingResult?, purchases: MutableList<Purchase>?) {
-        when (billingResult?.responseCode) {
-            BillingClient.BillingResponseCode.OK -> {
-                // will handle server verification, consumables, and updating the local cache
-                purchases?.apply { processPurchases(this.toSet()) }
-            }
-            BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED -> {
-                // item already owned? call queryPurchasesAsync to verify and process all such items
-                Log.d(TAG, billingResult.debugMessage)
-                queryPurchasesAsync()
-            }
-            BillingClient.BillingResponseCode.SERVICE_DISCONNECTED -> {
-                connectToPlayBillingService()
-            }
-            else -> {
-                Log.i(TAG, billingResult?.debugMessage)
-            }
-        }
-    }
-
-    companion object {
-        private const val TAG = "Main"
-    }
-
-    override fun onBillingServiceDisconnected() {
-        connectToPlayBillingService()
-    }
+    private lateinit var billingClient: BillingClient
+    private lateinit var productsAdapter: ProductAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        instantiateAndConnectToPlayBillingService()
-        findViewById<Button>(R.id.btn).setOnClickListener {
+        setupBillingClient()
+        btn.setOnClickListener {
             val intent = Intent(this, EmptyActivity::class.java)
             startActivity(intent)
         }
     }
 
-    private fun instantiateAndConnectToPlayBillingService() {
-        playStoreBillingClient = BillingClient.newBuilder(this)
-            .enablePendingPurchases()
-            .setListener(this).build()
-        connectToPlayBillingService()
-    }
+    private fun setupBillingClient() {
+        billingClient = BillingClient
+            .newBuilder(this)
+            .setListener(this)
+            .build()
 
-    private fun connectToPlayBillingService(): Boolean {
-        if (!playStoreBillingClient.isReady) {
-            playStoreBillingClient.startConnection(this)
-            return true
-        }
-        return false
-    }
-
-    override fun onBillingSetupFinished(billingResult: BillingResult) {
-        when (billingResult.responseCode) {
-            BillingClient.BillingResponseCode.OK -> {
-                Log.d(TAG, "onBillingSetupFinished successfully" + billingResult.debugMessage)
-                querySkuDetailsAsync(BillingClient.SkuType.INAPP, SkuConstaint.INAPP_SKUS)
-                querySkuDetailsAsync(BillingClient.SkuType.SUBS, SkuConstaint.SUBS_SKUS)
-                queryPurchasesAsync()
-            }
-            BillingClient.BillingResponseCode.BILLING_UNAVAILABLE -> {
-                //Some apps may choose to make decisions based on this knowledge.
-                Log.d(TAG, billingResult.debugMessage)
-            }
-            else -> {
-                //do nothing. Someone else will connect it through retry policy.
-                //May choose to send to server though
-                Log.d(TAG, billingResult.debugMessage)
-            }
-        }
-    }
-
-    private fun queryPurchasesAsync() {
-        Log.d(TAG, "queryPurchasesAsync called")
-        val purchasesResult = HashSet<Purchase>()
-        var result = playStoreBillingClient.queryPurchases(BillingClient.SkuType.INAPP)
-        Log.d(TAG, "queryPurchasesAsync INAPP results: ${result?.purchasesList?.size}")
-        result?.purchasesList?.apply { purchasesResult.addAll(this) }
-        if (isSubscriptionSupported()) {
-            result = playStoreBillingClient.queryPurchases(BillingClient.SkuType.SUBS)
-            result?.purchasesList?.apply {
-                Log.d(TAG,"list Purchase" +  this.toString())
-                //setUpAdapter(this)
-                purchasesResult.addAll(this)
-            }
-            Log.d(TAG, "queryPurchasesAsync SUBS results: ${result?.purchasesList?.size}")
-        }
-        processPurchases(purchasesResult)
-    }
-
-    private fun setUpAdapter(list: List<Purchase>) {
-        val productAdapter = ProductAdapter()
-        val rcv = findViewById<RecyclerView>(R.id.rcv)
-        rcv.adapter = productAdapter
-
-        //productAdapter.submitList(list)
-
-    }
-
-    private fun processPurchases(purchasesResult: Set<Purchase>) =
-        CoroutineScope(Job() + Dispatchers.IO).launch {
-            Log.d(TAG, "processPurchases called")
-            val validPurchases = HashSet<Purchase>(purchasesResult.size)
-            Log.d(TAG, "processPurchases newBatch content $purchasesResult")
-            purchasesResult.forEach { purchase ->
-                if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
-//                    if (isSignatureValid(purchase)) {
-//                        validPurchases.add(purchase)
-//                    }
-                } else if (purchase.purchaseState == Purchase.PurchaseState.PENDING) {
-                    Log.d(TAG, "Received a pending purchase of SKU: ${purchase.sku}")
-                    // handle pending purchases, e.g. confirm with users about the pending
-                    // purchases, prompt them to complete it, etc.
+        billingClient.startConnection(object : BillingClientStateListener {
+            override fun onBillingSetupFinished(@BillingClient.BillingResponse billingResponseCode: Int) {
+                if (billingResponseCode == BillingClient.BillingResponse.OK) {
+                    println("BILLING | startConnection | RESULT OK")
+                } else {
+                    println("BILLING | startConnection | RESULT: $billingResponseCode")
                 }
             }
-//            val (consumables, nonConsumables) = validPurchases.partition {
-//                GameSku.CONSUMABLE_SKUS.contains(it.sku)
-//            }
 
-//            handleConsumablePurchasesAsync(consumables)
-//            acknowledgeNonConsumablePurchasesAsync(nonConsumables)
+            override fun onBillingServiceDisconnected() {
+                println("BILLING | onBillingServiceDisconnected | DISCONNECTED")
+            }
+        })
+    }
+
+    fun onLoadProductsClicked(view: View) {
+        if (billingClient.isReady) {
+            val params = SkuDetailsParams
+                .newBuilder()
+                .setSkusList(skuList)
+                .setType(BillingClient.SkuType.INAPP)
+                .build()
+            billingClient.querySkuDetailsAsync(params) { responseCode, skuDetailsList ->
+                if (responseCode == BillingClient.BillingResponse.OK) {
+                    println("querySkuDetailsAsync, responseCode: $responseCode")
+                    initProductAdapter(skuDetailsList)
+                } else {
+                    println("Can't querySkuDetailsAsync, responseCode: $responseCode")
+                }
+            }
+        } else {
+            println("Billing Client not ready")
         }
+    }
 
-    private fun handleConsumablePurchasesAsync(consumables: List<Purchase>) {
-        Log.d(TAG, "handleConsumablePurchasesAsync called")
-        consumables.forEach {
-            Log.d(TAG, "handleConsumablePurchasesAsync foreach it is $it")
-            val params =
-                ConsumeParams.newBuilder().setPurchaseToken(it.purchaseToken).build()
-            playStoreBillingClient.consumeAsync(params) { billingResult, purchaseToken ->
-                when (billingResult.responseCode) {
-                    BillingClient.BillingResponseCode.OK -> {
-                        Log.d(TAG, purchaseToken)
-                    }
-                    else -> {
+    private fun initProductAdapter(skuDetailsList: List<SkuDetails>) {
+        productsAdapter = ProductAdapter(skuDetailsList) {
+            val billingFlowParams = BillingFlowParams
+                .newBuilder()
+                .setSkuDetails(it)
+                .build()
+            billingClient.launchBillingFlow(this, billingFlowParams)
+        }
+        rcv.adapter = productsAdapter
+    }
+
+    override fun onPurchasesUpdated(responseCode: Int, purchases: MutableList<Purchase>?) {
+        println("onPurchasesUpdated: $responseCode")
+        allowMultiplePurchases(purchases)
+    }
+
+    private fun allowMultiplePurchases(purchases: MutableList<Purchase>?) {
+        val purchase = purchases?.first()
+        if (purchase != null) {
+            billingClient.consumeAsync(purchase.purchaseToken) { responseCode, purchaseToken ->
+                if (responseCode == BillingClient.BillingResponse.OK && purchaseToken != null) {
+                    println("AllowMultiplePurchases success, responseCode: $responseCode")
+                } else {
+                    println("Can't allowMultiplePurchases, responseCode: $responseCode")
+                }
+            }
+        }
+    }
+
+    private fun clearHistory() {
+        billingClient.queryPurchases(BillingClient.SkuType.INAPP).purchasesList
+            .forEach {
+                billingClient.consumeAsync(it.purchaseToken) { responseCode, purchaseToken ->
+                    if (responseCode == BillingClient.BillingResponse.OK && purchaseToken != null) {
+                        println("onPurchases Updated consumeAsync, purchases token removed: $purchaseToken")
+                    } else {
+                        println("onPurchases some troubles happened: $responseCode")
                     }
                 }
             }
-        }
     }
 
-    private fun acknowledgeNonConsumablePurchasesAsync(nonConsumables: List<Purchase>) {
-        nonConsumables.forEach { purchase ->
-            val params = AcknowledgePurchaseParams.newBuilder().setPurchaseToken(purchase
-                .purchaseToken).build()
-            playStoreBillingClient.acknowledgePurchase(params) { billingResult ->
-                when (billingResult.responseCode) {
-                    BillingClient.BillingResponseCode.OK -> {
-                        Log.d(TAG, purchase.toString())
-                    }
-                    else -> Log.d(TAG, "acknowledgeNonConsumablePurchasesAsync response is ${billingResult.debugMessage}")
-                }
-            }
-
-        }
+    companion object {
+        private val skuList = listOf("food", "drink")
     }
-
-    private fun isSubscriptionSupported(): Boolean {
-        val billingResult =
-            playStoreBillingClient.isFeatureSupported(BillingClient.FeatureType.SUBSCRIPTIONS)
-        var succeeded = false
-        when (billingResult.responseCode) {
-            BillingClient.BillingResponseCode.SERVICE_DISCONNECTED -> connectToPlayBillingService()
-            BillingClient.BillingResponseCode.OK -> succeeded = true
-            else -> Log.w(TAG,
-                "isSubscriptionSupported() error: ${billingResult.debugMessage}")
-        }
-        return succeeded
-    }
-
-    private fun querySkuDetailsAsync(
-        @BillingClient.SkuType skuType: String,
-        skuList: List<String>) {
-        val params = SkuDetailsParams.newBuilder().setSkusList(skuList).setType(skuType).build()
-        Log.d(TAG, "querySkuDetailsAsync for $skuType")
-        playStoreBillingClient.querySkuDetailsAsync(params) { billingResult, skuDetailsList ->
-            when (billingResult.responseCode) {
-                BillingClient.BillingResponseCode.OK -> {
-                    findViewById<TextView>(R.id.tv1).text = skuDetailsList.toString()
-                    Log.d(TAG,"skulist" +  skuDetailsList.toString())
-
-                }
-                else -> {
-                    Log.e(TAG, billingResult.debugMessage)
-                }
-            }
-        }
-    }
-
-    private object SkuConstaint {
-        val FOOD = "food"
-        val DRINK = "drink"
-        val MONTHLY = "monthly"
-        val YEARLY = "yearly"
-
-        val INAPP_SKUS = listOf(FOOD, DRINK)
-        val SUBS_SKUS = listOf(MONTHLY, YEARLY)
-        val CONSUMABLE_SKUS = listOf(FOOD)
-        val GOLD_STATUS_SKUS = SUBS_SKUS // coincidence that there only gold_status is a sub
-    }
-
 }

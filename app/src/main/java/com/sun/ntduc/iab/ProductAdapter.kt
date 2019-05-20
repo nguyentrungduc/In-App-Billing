@@ -7,38 +7,25 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import kotlinx.android.synthetic.main.item_product.view.*
+import com.android.billingclient.api.SkuDetails
 
-class ProductAdapter : ListAdapter<Sku, ProductAdapter.ViewHolder>(SkuDiffCallback()) {
-    override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
-        val inflater = LayoutInflater.from(viewGroup.context)
-        return ViewHolder(inflater.inflate(R.layout.item_product, viewGroup, false))
+class ProductAdapter(
+    private val list: List<SkuDetails>,
+    private val onProductClicked: (SkuDetails) -> Unit
+) : RecyclerView.Adapter<ProductAdapter.ViewHolder>() {
+
+    override fun getItemCount(): Int = list.size
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductAdapter.ViewHolder {
+        val textView = LayoutInflater.from(parent.context).inflate(R.layout.item_product, parent, false) as TextView
+        val viewHolder = ViewHolder(textView)
+        textView.setOnClickListener { onProductClicked(list[viewHolder.adapterPosition]) }
+        return viewHolder
     }
-
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(getItem(position))
-
+        holder.textView.text = list[position].title
     }
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
-        fun bind(sku: Sku) {
-            val tv = itemView.findViewById<TextView>(R.id.tv_id)
-            tv.text = sku.id
-
-        }
-    }
-
-    class SkuDiffCallback : DiffUtil.ItemCallback<Sku>() {
-        override fun areItemsTheSame(oldItem: Sku, newItem: Sku): Boolean {
-            return oldItem.id == newItem.id
-        }
-
-        override fun areContentsTheSame(oldItem: Sku, newItem: Sku): Boolean {
-            return oldItem == newItem
-        }
-    }
-
-
+    class ViewHolder(val textView: TextView) : RecyclerView.ViewHolder(textView)
 }
