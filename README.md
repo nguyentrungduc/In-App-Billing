@@ -200,6 +200,37 @@ Kiểm tra tính năng cụ thể đăng ký
                 }
              }
         }
+        
+### Attach a developer payload
+- có thể đính kèm một chuỗi tùy ý hoặc developer payload của nhà phát triển để mua hàng. Tuy nhiên, lưu ý rằng bạn chỉ có thể đính kèm developer payload  khi giao dịch mua được thừa nhận hoặc tiêu thụ. Điều này không giống như tải trọng của nhà phát triển trong AIDL, nơi tải trọng có thể được chỉ định khi khởi chạy luồng mua.
+- Đối với các sản phẩm tiêu thụ, ConsumerAsync() lấy một đối tượng ConsumeParams bao gồm payload, như trong ví dụ sau:
+
+                val client: BillingClient = ...
+                val listener: ConsumeResponseListener = ...
+
+                val consumeParams =
+                    ConsumeParams.newBuilder()
+                        .setPurchaseToken(/* token */)
+                        .setDeveloperPayload(/* payload */)
+                        .build()
+
+                client.consumeAsync(consumeParams, listener)
+ - Đối vs sp ko đc tiêu thụ :
+     
+     
+        val client: BillingClient = ...
+        val listener: AcknowledgePurchaseResponseListener = ...
+
+        val acknowledgePurchaseParams =
+            AcknowledgePurchaseParams.newBuilder()
+                .setPurchaseToken(/* token */)
+                .setDeveloperPayload(/* payload */)
+                .build()
+
+        client.acknowledgePurchase(acknowledgePurchaseParams, listener)
+        
+        
+- Để access vào developer payload -> getDeveloperPayload()
 
 ### Keep purchases up-to-date
 - Có thể mất theo dõi những lần mua hàng mà người dùng đã thực hiện. Dưới đây là hai tình huống trong đó ứng dụng của bạn có thể mất dấu vết mua hàng và việc truy vấn mua hàng là quan trọng. 
