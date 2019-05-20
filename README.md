@@ -37,21 +37,7 @@ Bạn có thể đặt thời gian dùng thử miễn phí từ 3 ngày trở l�
 
 Để chuẩn bị kiểm tra triển khai Thanh toán Google Play của bạn, hãy thực hiện các tác vụ sau:
 
-Xuất bản ứng dụng của bạn lên một bản thử nghiệm đóng hoặc mở trong Google Play . Sau khi bạn xuất bản một ứng dụng lên bản thử nghiệm, có thể mất vài giờ để ứng dụng có sẵn cho người thử nghiệm.
-Đảm bảo mỗi người kiểm tra tham gia vào thử nghiệm của ứng dụng của bạn . Trên URL chọn tham gia thử nghiệm của bạn, những người thử nghiệm của bạn sẽ nhận được lời giải thích về ý nghĩa của việc thử nghiệm và liên kết đến chọn tham gia.
-Bạn có thể kiểm tra trên mọi thiết bị phần cứng hỗ trợ Android chạy Android 1.6 trở lên. Phiên bản mới nhất của ứng dụng Google Play phải được cài đặt trên thiết bị. Để biết thông tin chung về cách thiết lập thiết bị để sử dụng trong việc phát triển ứng dụng Android, hãy xem Sử dụng thiết bị phần cứng .
 
-Kiểm tra một ứng dụng Google Play Billing
-Kiểm tra với các phản ứng tĩnh
-Google Play Billing cung cấp kết hợp ID sản phẩm dành riêng và phản hồi tĩnh được liên kết mà bạn có thể sử dụng để kiểm tra việc triển khai Google Play Billing của mình. Những phản hồi này cho phép bạn xác minh rằng ứng dụng của bạn đang xử lý các phản hồi chính của Google Play. Bạn có thể kiểm tra việc triển khai Google Play Billing bằng các phản hồi tĩnh này trước khi liên quan đến người kiểm tra và ngay cả khi ứng dụng chưa được xuất bản.
-
-Để kiểm tra việc triển khai của bạn bằng các phản hồi tĩnh, bạn tạo yêu cầu Thanh toán Google Play bằng một mặt hàng đặc biệt có ID sản phẩm dành riêng. Mỗi ID sản phẩm dành riêng trả về một phản hồi tĩnh cụ thể từ Google Play. Không có tiền được chuyển khi bạn thực hiện các yêu cầu Thanh toán trên Google Play với ID sản phẩm dành riêng. Ngoài ra, bạn không thể chỉ định hình thức thanh toán khi bạn thực hiện yêu cầu thanh toán với ID sản phẩm dành riêng.
-
-Lưu ý: Phản hồi tĩnh không thể được sử dụng để kiểm tra đăng ký.
-
-Bạn không cần liệt kê các sản phẩm dành riêng trong danh sách sản phẩm của ứng dụng. Google Play đã biết về ID sản phẩm dành riêng. Ngoài ra, bạn không cần tải ứng dụng của mình lên Google Play Console để thực hiện các thử nghiệm phản hồi tĩnh với ID sản phẩm dành riêng. Bạn chỉ cần cài đặt ứng dụng của mình trên thiết bị, đăng nhập vào thiết bị và thực hiện các yêu cầu thanh toán bằng ID sản phẩm dành riêng.
-
-Lưu ý: Trước đây bạn có thể kiểm tra một ứng dụng bằng cách tải lên phiên bản "bản nháp" chưa được công bố. Chức năng này không còn được hỗ trợ. Tuy nhiên, bạn có thể kiểm tra ứng dụng của mình bằng các phản hồi tĩnh ngay cả trước khi bạn tải nó lên Google Play Store. Để biết thêm thông tin, xem Kiểm tra với các phản ứng tĩnh .
 
 Có ba ID sản phẩm dành riêng để kiểm tra phản hồi Thanh toán Google Play tĩnh:
 
@@ -89,70 +75,26 @@ Sau khi bạn hoàn thành kiểm tra phản hồi tĩnh và bạn xác minh r�
 
 Lưu ý: Bạn có thể thực hiện kiểm tra từ đầu đến cuối của ứng dụng bằng cách xuất bản nó thành một bản thử nghiệm kín . Điều này cho phép bạn xuất bản ứng dụng lên Google Play Store, nhưng giới hạn tính khả dụng của nó đối với những người thử nghiệm mà bạn chỉ định.
 
-Để kiểm tra việc triển khai Google Play Billing với mua hàng trong ứng dụng thực tế, bạn phải sử dụng tài khoản thử nghiệm. Theo mặc định, tài khoản thử nghiệm duy nhất được đăng ký là tài khoản được liên kết với tài khoản nhà phát triển của bạn. Bạn có thể đăng ký tài khoản kiểm tra bổ sung bằng cách sử dụng Bảng điều khiển Google Play. Nếu bạn chưa thiết lập tài khoản kiểm tra trước đó, hãy xem Thiết lập tài khoản kiểm tra .
+- Để kiểm tra việc triển khai Google Play Billing với mua hàng trong ứng dụng thực tế, bạn phải sử dụng tài khoản thử nghiệm. Theo mặc định, tài khoản thử nghiệm duy nhất được đăng ký là tài khoản được liên kết với tài khoản nhà phát triển của bạn. Bạn có thể đăng ký tài khoản kiểm tra bổ sung bằng cách sử dụng Bảng điều khiển Google Play. Nếu bạn chưa thiết lập tài khoản kiểm tra trước đó, hãy xem Thiết lập tài khoản kiểm tra .
 
-Tài khoản thử nghiệm có thể mua một mặt hàng trong danh sách sản phẩm của bạn chỉ khi mặt hàng đó được xuất bản.
+- Tài khoản thử nghiệm có thể mua một mặt hàng trong danh sách sản phẩm của bạn chỉ khi mặt hàng đó được xuất bản.
 
-Để kiểm tra triển khai Hóa đơn Google Play của bạn với các giao dịch mua thực tế, hãy làm theo các bước sau:
+- Để kiểm tra triển khai Hóa đơn Google Play của bạn với các giao dịch mua thực tế, hãy làm theo các bước sau:
 
-Tải ứng dụng của bạn lên bản nhạc thử nghiệm đã đóng trong Bảng điều khiển Google Play.
-Lưu ý: Sau khi tải lên ứng dụng ban đầu, người kiểm tra giấy phép có thể mua hàng từ các phiên bản phát triển của ứng dụng mà không cần tải lên Google Play Console. Điều này cho phép bạn sử dụng các bản dựng đã ký gỡ lỗi và thực hiện các thay đổi mà không phải tải lên phiên bản mới mỗi lần.
+- Tải ứng dụng của bạn lên bản nhạc thử nghiệm đã đóng trong Bảng điều khiển Google Play.
+- Lưu ý: Sau khi tải lên ứng dụng ban đầu, người kiểm tra giấy phép có thể mua hàng từ các phiên bản phát triển của ứng dụng mà không cần tải lên Google Play Console. Điều này cho phép bạn sử dụng các bản dựng đã ký gỡ lỗi và thực hiện các thay đổi mà không phải tải lên phiên bản mới mỗi lần.
 
-Lưu ý: Trước đây bạn có thể kiểm tra một ứng dụng bằng cách tải lên phiên bản "bản nháp" chưa được công bố. Chức năng này không còn được hỗ trợ. Thay vào đó, bạn phải xuất bản ứng dụng của mình lên bản thử nghiệm đã đóng hoặc mở. Để biết thêm thông tin, hãy xem Dự thảo ứng dụng không còn được hỗ trợ .
+- Lưu ý: Trước đây bạn có thể kiểm tra một ứng dụng bằng cách tải lên phiên bản "bản nháp" chưa được công bố. Chức năng này không còn được hỗ trợ. Thay vào đó, bạn phải xuất bản ứng dụng của mình lên bản thử nghiệm đã đóng hoặc mở. Để biết thêm thông tin, hãy xem Dự thảo ứng dụng không còn được hỗ trợ .
 
-Tạo các sản phẩm trong ứng dụng của bạn trong Bảng điều khiển Google Play. Để biết thêm chi tiết, hãy tham khảo Tạo sản phẩm một lần và Tạo đăng ký
-Cài đặt ứng dụng của bạn trên thiết bị hỗ trợ Android. Bạn không thể sử dụng trình giả lập để kiểm tra Google Play Billing. Để tìm hiểu cách cài đặt ứng dụng trên thiết bị, hãy xem Chạy ứng dụng của bạn trên thiết bị .
-Xác minh rằng thiết bị của bạn đang chạy phiên bản được hỗ trợ của ứng dụng Google Play hoặc ứng dụng MyApps. Nếu thiết bị của bạn đang chạy Android 3.0, Google Play Billing yêu cầu phiên bản 5.0.12 (hoặc cao hơn) của ứng dụng MyApps. Nếu thiết bị của bạn đang chạy bất kỳ phiên bản Android nào khác, Google Play Billing yêu cầu phiên bản 2.3.4 (hoặc cao hơn) của ứng dụng Google Play. Để tìm hiểu cách kiểm tra phiên bản của ứng dụng Google Play, hãy xem Cập nhật Google Play .
-Thực hiện mua trong ứng dụng trong ứng dụng của bạn.
+- Tạo các sản phẩm trong ứng dụng của bạn trong Bảng điều khiển Google Play. Để biết thêm chi tiết, hãy tham khảo Tạo sản phẩm một lần và Tạo đăng ký
+- Cài đặt ứng dụng của bạn trên thiết bị hỗ trợ Android. Bạn không thể sử dụng trình giả lập để kiểm tra Google Play Billing. Để tìm hiểu cách cài đặt ứng dụng trên thiết bị, hãy xem Chạy ứng dụng của bạn trên thiết bị .
+- Xác minh rằng thiết bị của bạn đang chạy phiên bản được hỗ trợ của ứng dụng Google Play hoặc ứng dụng MyApps. Nếu thiết bị của bạn đang chạy Android 3.0, Google Play Billing yêu cầu phiên bản 5.0.12 (hoặc cao hơn) của ứng dụng MyApps. Nếu thiết bị của bạn đang chạy bất kỳ phiên bản Android nào khác, Google Play Billing yêu cầu phiên bản 2.3.4 (hoặc cao hơn) của ứng dụng Google Play. - Để tìm hiểu cách kiểm tra phiên bản của ứng dụng Google Play, hãy xem Cập nhật Google Play .
+- Thực hiện mua trong ứng dụng trong ứng dụng của bạn.
 Lưu ý: Cách duy nhất để thay đổi tài khoản chính trên thiết bị là thực hiện khôi phục cài đặt gốc, đảm bảo bạn đăng nhập bằng tài khoản chính trước.
 
-Người dùng kiểm tra ứng dụng Google Play Billing
-Thiết lập tài khoản kiểm tra
-Để thiết lập tài khoản người kiểm tra:
 
-Sử dụng Bảng điều khiển Google Play để tải lên và xuất bản các sản phẩm trong ứng dụng mà bạn muốn người kiểm tra có thể mua. Lưu ý rằng bạn có thể tải lên và xuất bản các mục trong ứng dụng trước khi xuất bản APK.
-Sử dụng Bảng điều khiển dành cho nhà phát triển để tạo tài khoản người kiểm tra giấy phép:
-Điều hướng đến Cài đặt > Chi tiết tài khoản .
-Trong phần Kiểm tra giấy phép, hãy thêm địa chỉ email của người kiểm tra của bạn vào tài khoản Gmail với trường truy cập kiểm tra .
-Lưu các thay đổi của bạn. Người kiểm tra có thể bắt đầu mua sản phẩm trong ứng dụng của bạn trong vòng 15 phút.
-Lưu ý : Tài khoản kiểm tra phải có trên thiết bị Android của người kiểm tra. Nếu thiết bị có nhiều tài khoản, giao dịch mua sẽ được thực hiện với tài khoản đã tải xuống ứng dụng. Nếu không có tài khoản nào tải xuống ứng dụng, giao dịch mua được thực hiện với tài khoản đầu tiên. Người dùng có thể xác nhận tài khoản đang mua hàng bằng cách mở rộng hộp thoại mua hàng.
 
-Hướng dẫn người kiểm tra thực hiện mua thử nghiệm
-Sau khi tài khoản kiểm tra được thiết lập, bạn có thể hướng dẫn người dùng thực hiện mua hàng thử nghiệm. Sau đây là một số chi tiết về quy trình mua thử nghiệm:
 
-Người dùng sẽ sử dụng cùng một luồng mua ứng dụng được sử dụng bởi người dùng thông thường.
-Sử dụng nên thực hiện ít nhất hai lần mua, một với hình thức thanh toán "luôn được chấp thuận" và một với hình thức thanh toán "luôn bị từ chối". Các hình thức thanh toán thử nghiệm này cho phép bạn đảm bảo ứng dụng của mình phản ứng đúng khi thanh toán được phê duyệt hoặc từ chối. Hình 1 cho thấy các hình thức thanh toán thử nghiệm này khi chúng xuất hiện trong luồng mua hàng:
-
-Hình 1. Các tùy chọn công cụ kiểm tra phương thức thanh toán cho người dùng kiểm tra giấy phép.
-Những hình thức thanh toán này là hai hình thức thanh toán duy nhất có sẵn cho những người thử nghiệm được cấp phép. Khi sử dụng các hình thức thanh toán này, luồng mua hàng sẽ trả về kết quả ngay lập tức.
-Thuế không được tính cho mua thử nghiệm.
-Người kiểm tra được cấp phép sẽ không bị tính phí khi mua hàng của họ.
-Google Play chỉ ra giao dịch mua thử bằng cách hiển thị thông báo trên trung tâm của hộp thoại mua.
-Lưu ý: Nếu bạn muốn có thể thực hiện nhiều lần mua thử nghiệm cho cùng một sản phẩm trong ứng dụng, hãy đánh dấu mục đó là tiêu thụ sau mỗi lần mua. Để làm như vậy, gọi . consumeAsync()
-
-Kiểm tra với tài khoản thực tế
-Khi bạn chuẩn bị khởi chạy một ứng dụng sử dụng Google Play Billing, bạn có thể sử dụng các tùy chọn phát hành đóng hoặc mở của Google Play để kiểm tra xác thực và tải thử nghiệm khi triển khai trước khi phân phối ứng dụng cho tất cả người dùng của bạn.
-
-Với các nhóm thử nghiệm đóng hoặc mở, người dùng có thể cài đặt ứng dụng của bạn từ Google Play và kiểm tra các sản phẩm trong ứng dụng của bạn. Người dùng có thể thực hiện mua hàng thực sự dẫn đến chi phí thực tế cho tài khoản của họ, sử dụng bất kỳ phương thức thanh toán thông thường nào trong Google Play.
-
-Lưu ý: Nếu bạn bao gồm các tài khoản giấy phép thử nghiệm trong các nhóm phân phối thử nghiệm đóng và mở của mình, những người dùng đó sẽ chỉ có thể thực hiện mua hàng thử nghiệm.
-
-Kiểm tra các tính năng cụ thể của sản phẩm một lần
-Thử nghiệm chương trình khuyến mãi trong ứng dụng
-Nếu ứng dụng của bạn hỗ trợ các chương trình khuyến mãi trong ứng dụng, hãy kiểm tra các trường hợp sử dụng sau.
-
-Người dùng đổi mã khuyến mãi trong ứng dụng
-Nếu người dùng đổi mã khuyến mại trong luồng mua hàng của ứng dụng, như được mô tả trong Tạo yêu cầu Thanh toán trên Google Play , hệ thống sẽ gọi onActivityResult()phương thức hoạt động của bạn để xử lý việc mua hàng. Xác minh rằng onActivityResult()xử lý mua hàng đúng cách, cho dù người dùng thanh toán bằng tiền hoặc mã khuyến mãi.
-
-Người dùng đổi mã khuyến mãi trong Cửa hàng Google Play
-Nếu người dùng đổi mã khuyến mại trong Cửa hàng Play, có một số quy trình công việc có thể. Xác nhận từng quy trình công việc.
-
-Ứng dụng chưa được cài đặt
-Nếu người dùng đổi mã khuyến mại cho một ứng dụng chưa được cài đặt trên thiết bị, Cửa hàng Play sẽ nhắc người dùng cài đặt ứng dụng. (Nếu ứng dụng được cài đặt nhưng không cập nhật, Cửa hàng Play sẽ nhắc người dùng cập nhật ứng dụng.) Kiểm tra trình tự sau trên thiết bị chưa cài đặt ứng dụng của bạn.
-
-Người dùng đổi mã khuyến mại cho ứng dụng trong Cửa hàng Play. Cửa hàng Play sẽ nhắc người dùng cài đặt ứng dụng của bạn.
-Người dùng cài đặt và khởi chạy ứng dụng của bạn. Xác minh rằng khi khởi động, ứng dụng gọi getPurchases() và phát hiện chính xác giao dịch mua mà người dùng đã thực hiện bằng mã khuyến mãi.
-Ứng dụng đã được cài đặt nhưng không chạy
 Nếu người dùng đổi mã khuyến mại cho một ứng dụng được cài đặt trên thiết bị, Cửa hàng Play sẽ nhắc người dùng chuyển sang ứng dụng. Kiểm tra trình tự sau trên thiết bị đã cài đặt ứng dụng của bạn nhưng không chạy:
 
 - Người dùng đổi mã khuyến mại cho ứng dụng trong Cửa hàng Play. Cửa hàng Play nhắc người dùng chuyển sang ứng dụng của bạn.
@@ -167,6 +109,96 @@ Người dùng chuyển trở lại ứng dụng của bạn. Xác minh rằng n
 Kiểm tra tính năng cụ thể đăng ký
 - Luồng mua cho các sản phẩm và đăng ký một lần là tương tự nhau, nhưng đăng ký có các kịch bản bổ sung, chẳng hạn như gia hạn đăng ký thành công hoặc bị từ chối. Để giúp bạn kiểm tra ứng dụng của mình cho cả hai tình huống, bạn có thể sử dụng "Công cụ kiểm tra, luôn chấp thuận" và "Công cụ kiểm tra, luôn từ chối" phương thức thanh toán. Sử dụng các công cụ thanh toán này để kiểm tra các kịch bản ngoài kịch bản đăng ký thành công.
 
+## Implement
 
+- Add dependecy
+
+        dependencies {
+            ...
+            implementation 'com.android.billingclient:billing:2.0.0'
+        }
+        
+- Connect to Google Play 
+
+        lateinit private var billingClient: BillingClient
+          ...
+          billingClient = BillingClient.newBuilder(context).setListener(this).build()
+          billingClient.startConnection(object : BillingClientStateListener {
+             override fun onBillingSetupFinished(billingResult: BillingResult) {
+                 if (billingResult.responseCode == BillingResponse.OK) {
+                     // The BillingClient is ready. You can query purchases here.
+                 }
+             }
+             override fun onBillingServiceDisconnected() {
+                 // Try to restart the connection on the next request to
+                 // Google Play by calling the startConnection() method.
+             }
+          })
+          
+- Query detail sku 
+
+          override fun onBillingSetupFinished(billingResult: BillingResult) {
+                when (billingResult.responseCode) {
+                    BillingClient.BillingResponseCode.OK -> {
+                        Log.d(TAG, "onBillingSetupFinished successfully")
+                        querySkuDetailsAsync(BillingClient.SkuType.INAPP, skuList)
+        //                querySkuDetailsAsync(BillingClient.SkuType.SUBS, skuListSub)
+                        queryPurchasesAsync()
+                    }
+                    BillingClient.BillingResponseCode.BILLING_UNAVAILABLE -> {
+                        Log.d(TAG, billingResult.debugMessage)
+                    }
+                    else -> {
+                        Log.d(TAG, billingResult.debugMessage)
+                    }
+                }
+            }
+
+- Mua product
+
+        val flowParams = BillingFlowParams.newBuilder()
+        .setSkuDetails(skuDetails)
+        .build()
+        val responseCode = billingClient.launchBillingFlow(activity, flowParams)
+
+-> Sau khi mua xong sẽ trả vào onPurchasesUpdated
+
+          override fun onPurchasesUpdated(billingResult: BillingResult, purchases: List<Purchase>?) {
+             if (billingResult.responseCode == BillingResponse.OK && purchases != null) {
+                 for (purchase in purchases) {
+                     handlePurchase(purchase)
+                 }
+             } else if (billingResult.responseCode == BillingResponse.USER_CANCELED) {
+                 // Handle an error caused by a user cancelling the purchase flow.
+             } else {
+                 // Handle any other error codes.
+             }
+          }
+
+### Xác nhận mua hàng 
+- Google Play hỗ trợ mua sản phẩm từ bên trong ứng dụng của bạn (trong ứng dụng) hoặc bên ngoài ứng dụng của bạn (ngoài ứng dụng). Để Google Play đảm bảo trải nghiệm mua hàng nhất quán bất kể người dùng mua sản phẩm của bạn ở đâu, bạn phải thừa nhận tất cả các giao dịch mua có trạng thái THÀNH CÔNG nhận được thông qua Google Play Billing Library  càng sớm càng tốt sau khi cấp quyền cho người dùng. Nếu không xác nhận mua hàng trong vòng ba ngày, người dùng sẽ tự động nhận được tiền hoàn lại và Google Play sẽ hủy bỏ giao dịch mua. Đối với các giao dịch đang chờ xử lý, cửa sổ ba ngày không áp dụng khi giao dịch mua ở trạng thái PENDING. Thay vào đó, nó bắt đầu khi giao dịch mua đã chuyển sang trạng thái THÀNH CÔNG.
+- Ta có thể xác nhận mua hàng qua method 
+- Đối với consumable product, sử dụng consumeAsync()
+- Nếu ko sử dụng acknowledgePurchase()
+
+- Purchase object gồm một phương thức isAcledgeled () cho biết liệu giao dịch mua đã được thừa nhận hay chưa. Ngoài ra, API phía máy chủ bao gồm các giá trị boolean xác nhận cho Product.purchases.get() and Product.subscriptions.get(). Trước khi xác nhận mua hàng, hãy sử dụng các phương pháp này để xác định xem giao dịch đó đã được xác nhận hay chưa.
+
+        val client: BillingClient = ...
+        val acknowledgePurchaseResponseListener: AcknowledgePurchaseResponseListener = ...
+
+        fun handlePurchase() {
+            if (purchase.state === PurchaseState.PURCHASED) {
+                // Grant entitlement to the user.
+                ...
+
+                // Acknowledge the purchase if it hasn't already been acknowledged.
+                if (!purchase.isAcknowledged) {
+                    val acknowledgePurchaseParams = AcknowledgePurchaseParams.newBuilder()
+                            .setPurchaseToken(purchase.purchaseToken)
+                            .build()
+                    client.acknowledgePurchase(acknowledgePurchaseParams, acknowledgePurchaseResponseListener)
+                }
+             }
+        }
 
 
