@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import com.android.billingclient.api.SkuDetails
+import kotlinx.android.synthetic.main.item_product.view.*
 
 class ProductAdapter(val listener: OnClickItemListener) :
     ListAdapter<Sku, ProductAdapter.ViewHolder>(SkuDiffCallback()) {
@@ -31,7 +32,10 @@ class ProductAdapter(val listener: OnClickItemListener) :
 
         fun bind(sku: Sku, listener: OnClickItemListener) {
             val tv = itemView.findViewById<TextView>(R.id.tv_sku)
-            tv.text = sku.toString()
+            if (!sku.canPurchase) {
+                itemView.img.visibility = View.VISIBLE
+            }
+            tv.text = sku.title
                 tv.setOnClickListener {
                         listener.onClickItem(sku)
                 }

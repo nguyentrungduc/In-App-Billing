@@ -14,22 +14,23 @@ import com.android.billingclient.api.BillingResult
 import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.PurchasesUpdatedListener
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.coroutines.*
 
 
 class MainActivity : AppCompatActivity(), PurchasesUpdatedListener, BillingClientStateListener,
     ProductAdapter.OnClickItemListener, PurchaseHistoryResponseListener, ConsumeResponseListener,
     SkuDetailsResponseListener {
     override fun onSkuDetailsResponse(billingResult: BillingResult?, skuDetailsList: MutableList<SkuDetails>?) {
+        Log.d(TAG, "onSkuDetailResponse" + skuDetailsList.toString())
     }
 
     override fun onConsumeResponse(billingResult: BillingResult?, purchaseToken: String?) {
-        Log.d(TAG, "onConsumeRespone" + billingResult.toString() + "   " + purchaseToken.toString())
+        Log.d(TAG, "onConsumeRespone" + purchaseToken.toString())
     }
 
     private lateinit var mainViewModel: MainViewModel
 
     override fun onClickItem(item: Sku) {
+        Log.d(TAG, "onClick" + item)
         if (item.canPurchase) {
             val flowParams = BillingFlowParams.newBuilder()
                 .setSkuDetails(SkuDetails(item.originalJson))
@@ -42,7 +43,12 @@ class MainActivity : AppCompatActivity(), PurchasesUpdatedListener, BillingClien
     companion object {
         private const val TAG = "Main"
 
-        private val skuList = listOf("com.sun.ntduc.iab.food", "com.sun.ntduc.iab.drink")
+        private val skuList = listOf("com.sun.ntduc.iab.blood1"
+            ,"com.sun.ntduc.iab.blood2",
+            "com.sun.ntduc.iab.blood3",
+            "com.sun.ntduc.iab.blood4",
+            "com.sun.ntduc.iab.blood5",
+            "com.sun.ntduc.iab.gun1")
 
         private val skuListSub = listOf("id_3")
 
@@ -63,10 +69,10 @@ class MainActivity : AppCompatActivity(), PurchasesUpdatedListener, BillingClien
             BillingClient.BillingResponseCode.OK -> {
                 Log.d(TAG, "ppp" + purchases?.get(0)?.sku.toString())
                 purchases?.forEach {
-                    if (it.sku.toString().contains("blood")) {
+                    if (it.sku.toString().contains("drink") || it.sku.toString().contains("blood1") ) {
                         comsumableSku(it)
 
-                    } else  if(it.sku.toString().contains("hero")){
+                    } else  if(it.sku.toString().contains("food")){
                         insertOrUpdate(it.sku, false)
                     }
                 }
@@ -85,6 +91,13 @@ class MainActivity : AppCompatActivity(), PurchasesUpdatedListener, BillingClien
     }
 
     private fun comsumableSku(it: Purchase) {
+        val consumeParams =
+            ConsumeParams.newBuilder()
+                .setPurchaseToken(it.purchaseToken)
+                .build()
+
+        playStoreBillingClient.consumeAsync(consumeParams, this)
+
 
 
     }
@@ -103,6 +116,9 @@ class MainActivity : AppCompatActivity(), PurchasesUpdatedListener, BillingClien
         mainViewModel.getSkus().observe(this, Observer {
             productAdapter1.submitList(it)
         })
+        btn_reset.setOnClickListener {
+
+        }
 
 
     }
@@ -259,6 +275,7 @@ class MainActivity : AppCompatActivity(), PurchasesUpdatedListener, BillingClien
         purchaseHistoryRecordList: MutableList<PurchaseHistoryRecord>?
     ) {
         Log.d(TAG, "history" + purchaseHistoryRecordList?.size)
+        Log.d(TAG, "history"+purchaseHistoryRecordList.toString())
 
     }
 
@@ -279,5 +296,4 @@ class MainActivity : AppCompatActivity(), PurchasesUpdatedListener, BillingClien
         endDataSourceConnections()
         super.onDestroy()
     }
-
 }
