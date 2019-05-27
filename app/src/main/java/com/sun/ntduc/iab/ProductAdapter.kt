@@ -6,8 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.Toast
-import com.android.billingclient.api.SkuDetails
 import kotlinx.android.synthetic.main.item_product.view.*
 
 class ProductAdapter(val listener: OnClickItemListener) :
@@ -35,6 +33,7 @@ class ProductAdapter(val listener: OnClickItemListener) :
             if (!sku.canPurchase) {
                 itemView.img.visibility = View.VISIBLE
             }
+            itemView.tv_price.text = sku.price
             tv.text = sku.title
                 tv.setOnClickListener {
                         listener.onClickItem(sku)

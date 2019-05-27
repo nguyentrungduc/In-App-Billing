@@ -1,5 +1,6 @@
 package com.sun.ntduc.iab
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -48,7 +49,7 @@ class MainActivity : AppCompatActivity(), PurchasesUpdatedListener, BillingClien
             "com.sun.ntduc.iab.blood3",
             "com.sun.ntduc.iab.blood4",
             "com.sun.ntduc.iab.blood5",
-            "com.sun.ntduc.iab.gun1")
+            "com.sun.ntduc.iab.blood1")
 
         private val skuListSub = listOf("id_3")
 
@@ -116,8 +117,9 @@ class MainActivity : AppCompatActivity(), PurchasesUpdatedListener, BillingClien
         mainViewModel.getSkus().observe(this, Observer {
             productAdapter1.submitList(it)
         })
-        btn_reset.setOnClickListener {
-
+        btn_restore.setOnClickListener {
+            val intent = Intent(this, HistoryActivity::class.java)
+            startActivity(intent)
         }
 
 
@@ -142,8 +144,8 @@ class MainActivity : AppCompatActivity(), PurchasesUpdatedListener, BillingClien
         when (billingResult.responseCode) {
             BillingClient.BillingResponseCode.OK -> {
                 Log.d(TAG, "onBillingSetupFinished successfully")
+              //  querySkuDetailsAsync(BillingClient.SkuType.INAPP, skuList)
                 querySkuDetailsAsync(BillingClient.SkuType.INAPP, skuList)
-//                querySkuDetailsAsync(BillingClient.SkuType.SUBS, skuListSub)
                 queryPurchasesAsync()
                 getHistory()
             }
