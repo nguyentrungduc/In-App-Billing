@@ -3,6 +3,9 @@ package com.sun.ntduc.iab
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.android.billingclient.api.*
 import com.android.billingclient.api.AcknowledgePurchaseParams
 import com.android.billingclient.api.BillingClient
@@ -12,22 +15,28 @@ import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.PurchasesUpdatedListener
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.*
-import com.android.billingclient.api.BillingFlowParams
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 
 
 class MainActivity : AppCompatActivity(), PurchasesUpdatedListener, BillingClientStateListener,
-    ProductAdapter.OnClickItemListener, PurchaseHistoryResponseListener {
+    ProductAdapter.OnClickItemListener, PurchaseHistoryResponseListener, ConsumeResponseListener,
+    SkuDetailsResponseListener {
+    override fun onSkuDetailsResponse(billingResult: BillingResult?, skuDetailsList: MutableList<SkuDetails>?) {
+    }
 
-    override fun onClickItem(item: SkuDetails) {
+    override fun onConsumeResponse(billingResult: BillingResult?, purchaseToken: String?) {
+        Log.d(TAG, "onConsumeRespone" + billingResult.toString() + "   " + purchaseToken.toString())
+    }
 
-        val flowParams = BillingFlowParams.newBuilder()
-            .setSkuDetails(item)
-            .build()
+    private lateinit var mainViewModel: MainViewModel
 
-        playStoreBillingClient.launchBillingFlow(this, flowParams)
+    override fun onClickItem(item: Sku) {
+        if (item.canPurchase) {
+            val flowParams = BillingFlowParams.newBuilder()
+                .setSkuDetails(SkuDetails(item.originalJson))
+                .build()
 
+            playStoreBillingClient.launchBillingFlow(this, flowParams)
+        } else Toast.makeText(this, "mua roi ko can mua nua", Toast.LENGTH_SHORT).show()
     }
 
     companion object {
@@ -50,18 +59,14 @@ class MainActivity : AppCompatActivity(), PurchasesUpdatedListener, BillingClien
     private lateinit var productAdapter2: ProductAdapter
 
     override fun onPurchasesUpdated(billingResult: BillingResult?, purchases: MutableList<Purchase>?) {
-        Log.d(TAG, "billindResult" + billingResult.toString())
-        Log.d(TAG, "purchases" + purchases.toString())
         when (billingResult?.responseCode) {
             BillingClient.BillingResponseCode.OK -> {
                 Log.d(TAG, "ppp" + purchases?.get(0)?.sku.toString())
-                purchases?.apply { processPurchases(this.toSet()) }
                 purchases?.forEach {
                     if (it.sku.toString().contains("blood")) {
-                        handleConsumablePurchasesAsync(arrayListOf())
+                        comsumableSku(it)
 
-                    }
-                    else {
+                    } else {
 
                     }
                 }
@@ -79,6 +84,11 @@ class MainActivity : AppCompatActivity(), PurchasesUpdatedListener, BillingClien
         }
     }
 
+    private fun comsumableSku(it: Purchase) {
+
+
+    }
+
     override fun onBillingServiceDisconnected() {
         connectToPlayBillingService()
     }
@@ -86,16 +96,13 @@ class MainActivity : AppCompatActivity(), PurchasesUpdatedListener, BillingClien
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        mainViewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
         setUpAdapter()
         instantiateAndConnectToPlayBillingService()
-        SkuDatabase.getDataBase(this).skuDao().getInappSkuDetails()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                Log.d(TAG, "hihi")
-                Log.d(TAG,"hihiiii" +  it.toString())
 
-            }
+        mainViewModel.getSkus().observe(this, Observer {
+            productAdapter1.submitList(it)
+        })
 
 
     }
@@ -147,7 +154,6 @@ class MainActivity : AppCompatActivity(), PurchasesUpdatedListener, BillingClien
             }
             Log.d(TAG, "queryPurchasesAsync SUBS results: ${result?.purchasesList?.size}")
         }
-        processPurchases(purchasesResult)
     }
 
     private fun setUpAdapter() {
@@ -159,32 +165,6 @@ class MainActivity : AppCompatActivity(), PurchasesUpdatedListener, BillingClien
 
     }
 
-    private fun processPurchases(purchasesResult: Set<Purchase>) =
-        CoroutineScope(Job() + Dispatchers.IO).launch {
-            Log.d(TAG, "processPurchases called")
-            val validPurchases = HashSet<Purchase>(purchasesResult.size)
-            Log.d(TAG, "processPurchases newBatch content $purchasesResult")
-            purchasesResult.forEach { purchase ->
-//                if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
-//                    if (isSignatureValid(purchase)) {
-//                        validPurchases.add(purchase)
-//                    }
-//                } else if (purchase.purchaseState == Purchase.PurchaseState.PENDING) {
-//                    Log.d(TAG, "Received a pending purchase of SKU: ${purchase.sku}")
-//                     handle pending purchases, e.g. confirm with users about the pending
-//                     purchases, prompt them to complete it, etc.
-//                }
-                Log.d(TAG, "purchasee"+ purchase.toString())
-
-            }
-//            val (consumables, nonConsumables) = validPurchases.partition {
-//                GameSku.CONSUMABLE_SKUS.contains(it.sku)
-//            }
-
-
-//            handleConsumablePurchasesAsync(consumables)
-//            acknowledgeNonConsumablePurchasesAsync(nonConsumables)
-        }
 
     private fun handleConsumablePurchasesAsync(consumables: List<Purchase>) {
         Log.d(TAG, "handleConsumablePurchasesAsync called")
@@ -196,12 +176,18 @@ class MainActivity : AppCompatActivity(), PurchasesUpdatedListener, BillingClien
                 when (billingResult.responseCode) {
                     BillingClient.BillingResponseCode.OK -> {
                         Log.d(TAG, purchaseToken)
+                        purchaseToken.apply { disburseConsumableEntitlements(it) }
                     }
                     else -> {
                     }
                 }
             }
         }
+    }
+
+    private fun disburseConsumableEntitlements(it: Purchase) {
+       // SkuDatabase.getDataBase(this).purchaseDao().delete(it)
+
     }
 
     private fun acknowledgeNonConsumablePurchasesAsync(nonConsumables: List<Purchase>) {
@@ -213,7 +199,6 @@ class MainActivity : AppCompatActivity(), PurchasesUpdatedListener, BillingClien
             playStoreBillingClient.acknowledgePurchase(params) { billingResult ->
                 when (billingResult.responseCode) {
                     BillingClient.BillingResponseCode.OK -> {
-                        Log.d(TAG, purchase.toString())
 
                     }
                     else -> Log.d(
@@ -252,8 +237,6 @@ class MainActivity : AppCompatActivity(), PurchasesUpdatedListener, BillingClien
                 BillingClient.BillingResponseCode.OK -> {
                     if (skuDetailsList.orEmpty().isNotEmpty()) {
                         Log.d(TAG, skuDetailsList.toString())
-                        productAdapter1.submitList(skuDetailsList)
-
                     }
                     skuDetailsList.forEach {
                         insert(it)
@@ -275,25 +258,26 @@ class MainActivity : AppCompatActivity(), PurchasesUpdatedListener, BillingClien
         billingResult: BillingResult?,
         purchaseHistoryRecordList: MutableList<PurchaseHistoryRecord>?
     ) {
-//        Log.d(TAG, billingResult?.debugMessage)
-        Log.d(TAG,"history" + billingResult.toString())
-        Log.d(TAG, "history" + purchaseHistoryRecordList.toString())
         Log.d(TAG, "history" + purchaseHistoryRecordList?.size)
 
     }
 
     fun endDataSourceConnections() {
         playStoreBillingClient.endConnection()
-        // normally you don't worry about closing a DB connection unless you have more than
-        // one DB open. so no need to call 'localCacheBillingClient.close()'
-        Log.d(TAG, "startDataSourceConnections")
+        Log.d(TAG, "endDataSourceConnections")
     }
 
     fun insert(sku: SkuDetails) {
         SkuDatabase.getDataBase(this).skuDao().insertOrUpdate(sku)
     }
 
-    fun insertOrUpdate(sku : String, canPurchase: Boolean) {
+    fun insertOrUpdate(sku: String, canPurchase: Boolean) {
         SkuDatabase.getDataBase(this).skuDao().insertOrUpdate(sku, canPurchase)
     }
+
+    override fun onDestroy() {
+        endDataSourceConnections()
+        super.onDestroy()
+    }
+
 }

@@ -2,9 +2,10 @@ package com.sun.ntduc.iab
 
 import androidx.room.*
 import com.android.billingclient.api.Purchase
+import com.google.gson.Gson
 
 @Entity(tableName = "purchase_table")
-@TypeConverters(PurchaseTypeConverter::class)
+@TypeConverters(PurchaseTypeCoverter::class)
 class CachedPurchase(val data: Purchase) {
 
     @PrimaryKey(autoGenerate = true)
@@ -17,8 +18,8 @@ class CachedPurchase(val data: Purchase) {
 
     override fun equals(other: Any?): Boolean {
         return when (other) {
-            is CachedPurchase -> data.equals(other.data)
-            is Purchase -> data.equals(other)
+            is CachedPurchase -> data == other.data
+            is Purchase -> data == other
             else -> false
         }
     }
@@ -27,14 +28,4 @@ class CachedPurchase(val data: Purchase) {
         return data.hashCode()
     }
 
-}
-
-class PurchaseTypeConverter {
-    @TypeConverter
-    fun toString(purchase: Purchase): String = purchase.originalJson + '|' + purchase.signature
-
-    @TypeConverter
-    fun toPurchase(data: String): Purchase = data.split('|').let {
-        Purchase(it[0], it[1])
-    }
 }

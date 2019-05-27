@@ -7,24 +7,24 @@ import io.reactivex.Flowable
 @Dao
 interface PurchaseDao {
 
-//    @Query("SELECT * FROM purchase_table")
-//    fun getPurchases(): Flowable<List<CachedPurchase>>
+    @Query("SELECT * FROM purchase_table")
+    fun getPurchases(): Flowable<List<CachedPurchase>>
 
-//    @Insert
-//    fun insert(purchase: CachedPurchase)
+    @Insert
+    fun insert(purchase: CachedPurchase)
 
-//    @Transaction
-//    fun insert(vararg purchases: Purchase) {
-//        purchases.forEach {
-//            insert(CachedPurchase(data = it))
-//        }
-//    }
-//
-//    @Delete
-//    fun delete(vararg purchases: CachedPurchase)
+    @Transaction
+    fun insert(vararg purchases: Purchase) {
+        purchases.forEach {
+            insert(CachedPurchase(data = it))
+        }
+    }
 
-//    @Query("DELETE FROM purchase_table")
-//    fun deleteAll()
+    @Delete
+    fun delete(vararg purchases: CachedPurchase)
+
+    @Query("DELETE FROM purchase_table")
+    fun deleteAll()
 
 //    @Query("DELETE FROM purchase_table WHERE data = :purchase")
 //    fun delete(purchase: Purchase)
