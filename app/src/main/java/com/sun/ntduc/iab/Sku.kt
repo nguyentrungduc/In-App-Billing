@@ -1,13 +1,15 @@
 package com.sun.ntduc.iab
 
-data class Sku(
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
-    val id :  String?,
-    val canPurchase: Boolean, /* Not in SkuDetails; it's the augmentation */
+@Entity
+data class Sku(
+    val canPurchase: Boolean,
+    @PrimaryKey val sku: String,
     val type: String?,
     val price: String?,
     val title: String?,
     val description: String?,
     val originalJson: String?
-
 )

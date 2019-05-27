@@ -1,9 +1,9 @@
 package com.sun.ntduc.iab
 
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 
-class EmptyActivity : AppCompatActivity(){
+class HistoryActivity : AppCompatActivity(){
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
