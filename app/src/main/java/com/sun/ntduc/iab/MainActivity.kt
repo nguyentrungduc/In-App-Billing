@@ -66,8 +66,8 @@ class MainActivity : AppCompatActivity(), PurchasesUpdatedListener, BillingClien
                     if (it.sku.toString().contains("blood")) {
                         comsumableSku(it)
 
-                    } else {
-
+                    } else  if(it.sku.toString().contains("hero")){
+                        insertOrUpdate(it.sku, false)
                     }
                 }
             }
