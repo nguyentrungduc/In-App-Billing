@@ -41,4 +41,23 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
+    <Button
+            android:layout_marginStart="7dp"
+            android:layout_marginTop="4dp"
+            app:layout_constraintTop_toTopOf="parent"
+            android:text="Purchase"
+            app:layout_constraintStart_toEndOf="@id/tv_value"
+            android:id="@+id/btn_purchase1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:layout_marginTop="80dp"
+            android:id="@+id/rcv_sub"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+    </androidx.recyclerview.widget.RecyclerView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

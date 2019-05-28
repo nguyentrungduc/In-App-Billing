@@ -16,7 +16,6 @@ class HistoryAdapter() :
         return ViewHolder(inflater.inflate(R.layout.item_purchase, viewGroup, false))
     }
 
-
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(getItem(position))
 
@@ -25,7 +24,7 @@ class HistoryAdapter() :
     class ViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
 
         fun bind(purchase: PurchaseHistoryRecord) {
-            itemView.tv_purchase.text = purchase.sku + " "+ purchase.purchaseTime
+            itemView.tv_purchase.text = purchase.sku + "   "+ purchase.purchaseTime
 
         }
     }

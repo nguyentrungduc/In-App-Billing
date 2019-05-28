@@ -20,6 +20,8 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : AppCompatActivity(), PurchasesUpdatedListener, BillingClientStateListener,
     ProductAdapter.OnClickItemListener, PurchaseHistoryResponseListener, ConsumeResponseListener,
     SkuDetailsResponseListener {
+
+    private val listHistory = arrayListOf<String>()
     override fun onSkuDetailsResponse(billingResult: BillingResult?, skuDetailsList: MutableList<SkuDetails>?) {
         Log.d(TAG, "onSkuDetailResponse" + skuDetailsList.toString())
     }
@@ -69,13 +71,7 @@ class MainActivity : AppCompatActivity(), PurchasesUpdatedListener, BillingClien
             BillingClient.BillingResponseCode.OK -> {
                 Log.d(TAG, "ppp" + purchases?.get(0)?.sku.toString())
                 purchases?.forEach {
-                    if (it.sku.toString().contains("drink")) {
-                        insertOrUpdate(it.sku, false)
-
-
-                    } else  if(it.sku.toString().contains("food")){
-                        comsumableSku(it)
-                    }
+                    comsumableSku(it)
                 }
             }
             BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED -> {
@@ -121,7 +117,10 @@ class MainActivity : AppCompatActivity(), PurchasesUpdatedListener, BillingClien
             val intent = Intent(this, HistoryActivity::class.java)
             startActivity(intent)
         }
-
+        btn_purchase.setOnClickListener {
+            val intent = Intent(this, PurchaseQuatityActivity::class.java)
+            startActivity(intent)
+        }
 
     }
 
@@ -144,8 +143,8 @@ class MainActivity : AppCompatActivity(), PurchasesUpdatedListener, BillingClien
         when (billingResult.responseCode) {
             BillingClient.BillingResponseCode.OK -> {
                 Log.d(TAG, "onBillingSetupFinished successfully")
-              //  querySkuDetailsAsync(BillingClient.SkuType.INAPP, skuList)
-                querySkuDetailsAsync(BillingClient.SkuType.INAPP, skuList)
+                querySkuDetailsAsync(BillingClient.SkuType.INAPP, skuListSub)
+                       querySkuDetailsAsync(BillingClient.SkuType.INAPP, skuList)
                 queryPurchasesAsync()
                 getHistory()
             }
@@ -246,19 +245,25 @@ class MainActivity : AppCompatActivity(), PurchasesUpdatedListener, BillingClien
 
     private fun querySkuDetailsAsync(
         @BillingClient.SkuType skuType: String,
-        skuList: List<String>
+        skuList1: List<String>
     ) {
-        val params = SkuDetailsParams.newBuilder().setSkusList(skuList).setType(skuType).build()
+        val params = SkuDetailsParams.newBuilder().setSkusList(skuList1).setType(skuType).build()
         Log.d(TAG, "querySkuDetailsAsync for $skuType")
         playStoreBillingClient.querySkuDetailsAsync(params) { billingResult, skuDetailsList ->
             when (billingResult.responseCode) {
                 BillingClient.BillingResponseCode.OK -> {
-                    if (skuDetailsList.orEmpty().isNotEmpty()) {
-                        Log.d(TAG, skuDetailsList.toString())
+                    if (skuList1 == skuList) {
+                        if (skuDetailsList.orEmpty().isNotEmpty()) {
+                            Log.d(TAG, skuDetailsList.toString())
+                        }
+                        skuDetailsList.forEach {
+                            insert(it)
+                            if (listHistory.contains(it.sku)) {
+                                insertOrUpdate(it.sku, false)
+                            }
+                        }
                     }
-                    skuDetailsList.forEach {
-                        insert(it)
-                    }
+                    else Log.d(TAG, "subbb" + skuDetailsList)
                 }
                 else -> {
                     Log.e(TAG, billingResult.debugMessage)
@@ -278,6 +283,17 @@ class MainActivity : AppCompatActivity(), PurchasesUpdatedListener, BillingClien
     ) {
         Log.d(TAG, "history" + purchaseHistoryRecordList?.size)
         Log.d(TAG, "history"+purchaseHistoryRecordList.toString())
+        purchaseHistoryRecordList?.forEach {
+            listHistory.add(it.sku)
+            val consumeParams =
+                ConsumeParams.newBuilder()
+                    .setPurchaseToken(it.purchaseToken)
+                    .build()
+
+            playStoreBillingClient.consumeAsync(consumeParams, this)
+        }
+
+        querySkuDetailsAsync(BillingClient.SkuType.INAPP, skuList)
 
     }
 
