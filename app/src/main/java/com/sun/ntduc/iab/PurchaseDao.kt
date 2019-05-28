@@ -13,13 +13,6 @@ interface PurchaseDao {
     @Insert
     fun insert(purchase: CachedPurchase)
 
-    @Transaction
-    fun insert(vararg purchases: Purchase) {
-        purchases.forEach {
-            insert(CachedPurchase(data = it))
-        }
-    }
-
     @Delete
     fun delete(vararg purchases: CachedPurchase)
 

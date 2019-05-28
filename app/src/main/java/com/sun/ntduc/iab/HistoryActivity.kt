@@ -48,7 +48,7 @@ class HistoryActivity : AppCompatActivity(), BillingClientStateListener, Purchas
         setContentView(R.layout.activity_empty)
         instantiateAndConnectToPlayBillingService()
         historyAdapter = HistoryAdapter()
-        rcvHistory.adapter = historyAdapter
+        rcv_history.adapter = historyAdapter
 
     }
 

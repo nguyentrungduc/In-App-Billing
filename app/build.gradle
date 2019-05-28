@@ -41,12 +41,12 @@ dependencies {
     implementation "io.reactivex.rxjava2:rxjava:2.1.9"
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
     kapt "androidx.room:room-compiler:2.1.0-beta01"
-     implementation 'com.google.code.gson:gson:2.8.5'
+    implementation 'com.google.code.gson:gson:2.8.5'
 
 
 
     def room_version = "2.1.0-alpha06"
-   def lifecycle_version = "2.0.0"
+    def lifecycle_version = "2.0.0"
     implementation "androidx.room:room-runtime:$room_version"
 //    kapt "androidx.room:room-compiler:$room_version"
 //    implementation "io.reactivex.rxjava2:rxandroid:2.0.2"

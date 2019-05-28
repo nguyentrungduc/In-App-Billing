@@ -11,9 +11,10 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             android:layout_width="match_parent"
-            android:id="@+id/rcvHistory"
+            android:id="@+id/rcv_history"
             android:layout_height="match_parent">
 
     </androidx.recyclerview.widget.RecyclerView>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

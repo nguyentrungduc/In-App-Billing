@@ -44,12 +44,11 @@ class MainActivity : AppCompatActivity(), PurchasesUpdatedListener, BillingClien
     companion object {
         private const val TAG = "Main"
 
-        private val skuList = listOf("com.sun.ntduc.iab.blood1"
-            ,"com.sun.ntduc.iab.blood2",
-            "com.sun.ntduc.iab.blood3",
-            "com.sun.ntduc.iab.blood4",
-            "com.sun.ntduc.iab.blood5",
-            "com.sun.ntduc.iab.blood1")
+        private val skuList = listOf("id_2"
+            ,"com.sun.selfstudy.product1",
+            "id_4",
+            "com.sun.ntduc.iab.drink",
+            "com.sun.ntduc.iab.food")
 
         private val skuListSub = listOf("id_3")
 
@@ -70,11 +69,12 @@ class MainActivity : AppCompatActivity(), PurchasesUpdatedListener, BillingClien
             BillingClient.BillingResponseCode.OK -> {
                 Log.d(TAG, "ppp" + purchases?.get(0)?.sku.toString())
                 purchases?.forEach {
-                    if (it.sku.toString().contains("drink") || it.sku.toString().contains("blood1") ) {
-                        comsumableSku(it)
+                    if (it.sku.toString().contains("drink")) {
+                        insertOrUpdate(it.sku, false)
+
 
                     } else  if(it.sku.toString().contains("food")){
-                        insertOrUpdate(it.sku, false)
+                        comsumableSku(it)
                     }
                 }
             }
